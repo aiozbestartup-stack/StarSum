@@ -5,48 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Starsum</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body { background-color: #1a202c; color: white; font-family: sans-serif; margin: 0; padding: 0; }
-        .screen { display: none; padding: 20px; }
-        .active { display: block; }
-        .card { background: #2d3748; padding: 20px; margin-bottom: 15px; border-radius: 12px; display: flex; align-items: center; gap: 15px; cursor: pointer; border: 1px solid #4a5568; }
-        input { width: 100%; padding: 15px; margin: 10px 0; border-radius: 8px; border: none; background: #334155; color: white; box-sizing: border-box; }
-        .presets { display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
-        .preset-btn { background: #4a5568; padding: 10px 15px; border-radius: 8px; cursor: pointer; }
-        .buy-btn { width: 100%; padding: 15px; background: #63b3ed; border: none; border-radius: 8px; color: white; font-size: 18px; cursor: pointer; margin-top: 20px; }
+        body { background: #1a202c; color: white; font-family: sans-serif; margin: 0; padding: 20px; }
+        .card { background: #2d3748; padding: 20px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; border: 1px solid #4a5568; }
+        #purchase-screen { display: none; }
+        input { width: 100%; padding: 15px; margin: 10px 0; background: #334155; border: none; color: white; border-radius: 8px; box-sizing: border-box; }
+        .buy-btn { width: 100%; padding: 15px; background: #63b3ed; border: none; border-radius: 8px; color: white; font-size: 18px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div id="menu-screen" class="screen active">
-    <div class="card" onclick="document.getElementById('menu-screen').className='screen'; document.getElementById('purchase-screen').className='screen active';">
-        <i class="fa-solid fa-star"></i> <span>Stars olish</span>
-    </div>
+<div id="menu-screen">
+    <div class="card" id="star-btn">Stars olish (Нажми сюда)</div>
 </div>
 
-<div id="purchase-screen" class="screen">
-    <div onclick="document.getElementById('purchase-screen').className='screen'; document.getElementById('menu-screen').className='screen active';">
-        <i class="fa-solid fa-arrow-left"></i> Назад
-    </div>
+<div id="purchase-screen">
+    <button onclick="location.reload()">Назад</button>
     <h3>Stars sotib olish</h3>
     <input type="text" id="username" placeholder="Username">
-    <input type="number" id="amount" placeholder="Miqdori (min 50)" oninput="calcTotal()">
-    <div class="presets">
-        <div class="preset-btn" onclick="document.getElementById('amount').value=50; calcTotal()">50</div>
-        <div class="preset-btn" onclick="document.getElementById('amount').value=100; calcTotal()">100</div>
-        <div class="preset-btn" onclick="document.getElementById('amount').value=200; calcTotal()">200</div>
-    </div>
-    <div style="margin-top:10px;">To'lov summasi: <span id="total-price">0</span> so'm</div>
-    <button class="buy-btn" onclick="alert('Заказ отправлен!')">Sotib olish</button>
+    <input type="number" id="amount" placeholder="Количество (мин 50)" oninput="calc()">
+    <div>Сумма: <span id="total">0</span> so'm</div>
+    <button class="buy-btn" onclick="alert('Успешно!')">Sotib olish</button>
 </div>
 
 <script>
+    // Инициализация
     let tg = window.Telegram.WebApp;
     tg.expand();
-    function calcTotal() {
+
+    // Логика перехода
+    document.getElementById('star-btn').addEventListener('click', function() {
+        document.getElementById('menu-screen').style.display = 'none';
+        document.getElementById('purchase-screen').style.display = 'block';
+        // Авто-заполнение username
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById('username').value = tg.initDataUnsafe.user.username || "";
+        }
+    });
+
+    function calc() {
         let val = document.getElementById('amount').value;
-        document.getElementById('total-price').innerText = (val * 210).toLocaleString();
+        document.getElementById('total').innerText = (val * 210);
     }
 </script>
 </body>
